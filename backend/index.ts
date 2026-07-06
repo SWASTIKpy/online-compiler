@@ -17,7 +17,6 @@ app.post("/submission", (req, res) => {
     const language = req.body.language;
     // put this entry in the DB
     client.lPush("problems", JSON.stringify({userId, questionId, code, language}))
-
     res.json({
         message: "processing",
         

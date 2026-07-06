@@ -21,7 +21,12 @@ client.connect()
             console.log("processing question for user " + parsedResponse.userId);
             if (language === "c++") {
                 console.log("Running users c++ code")
-                await new Promise((r) => setTimeout(r, 10000));
+                const filePath = __dirname + "/code/a.cpp";
+                fs.writeFileSync(filePath, code);
+                const res = spawn("g++", [filePath, "-o", __dirname + "/code/a.out"]);
+                res.stdout.on("data", (data) => {
+                    console.log(data.toString());
+                });
             }
 
             if (language === "js") {
@@ -30,11 +35,21 @@ client.connect()
                 fs.writeFileSync(filePath, code);
                 const res = spawn("node", [filePath]);
                 res.stdout.on("data", (data) => {
-                    console.log(`stdout: ${data}`);
+                    console.log(data.toString());
                 });
-
-                await new Promise((r) => setTimeout(r, 2000));
             }
+
+            if(language === "python") {
+                const filePath = __dirname + "/code/a.py";
+                console.log("Running users python code")
+                fs.writeFileSync(filePath, code);
+                const res = spawn("python3", [filePath]);
+                res.stdout.on("data", (data) => {
+                    console.log(data.toString());
+                });
+            }
+
+
             // Update the status in the DB
         }
     });
